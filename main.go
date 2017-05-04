@@ -1,6 +1,7 @@
-package main
+package fb
 
 import (
+	//"reflect"
 	"bytes"
 	"encoding/json"
 	"fmt"
@@ -10,7 +11,14 @@ import (
 	"net/url"
 	"os"
 	"time"
-  // "github.com/soeyusuke/fb-bot/types"
+)
+
+var accessToken = os.Getenv("ACCESS_TOKEN")
+var verifyToken = os.Getenv("VERIFY_TOKEN")
+
+// const ...
+const (
+	EndPoint = "https://graph.facebook.com/v2.6/me/messages"
 )
 
 // ReceivedMessage ...
@@ -54,30 +62,24 @@ type Message struct {
 // SendMessage ...
 type SendMessage struct {
 	Recipient Recipient `json:"recipient"`
-	Message   struct {
+	Message struct {
 		Text string `json:"text"`
 	} `json:"message"`
 }
 
-
-var accessToken = os.Getenv("ACESS_TOKEN")
-var verifyToken = os.Getenv("VERIFY_TOKEN")
-
-// const ...
-const (
-	EndPoint = "https://graph.facebook.com/v2.6/me/messages"
-)
-
-func main() {
-	http.HandleFunc("/", helloHandler)
+func Listen(callback func(Messaging)) {
+	handleReceiveMessage = callback
+	http.HandleFunc("/", webhookHandler)
 	http.HandleFunc("/webhook", webhookHandler)
 	port := os.Getenv("PORT")
-	addr := fmt.Sprintf("%s", port)
+	addr := fmt.Sprintf(":%s", port)
 	http.ListenAndServe(addr, nil)
 }
 
-func helloHandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "Hello, Facebook bot")
+var handleReceiveMessage func(Messaging)
+
+func HelloHandler(w http.ResponseWriter, r *http.Request) {
+	fmt.Fprintf(w, "Hello, Facebook Bot")
 }
 
 func webhookHandler(w http.ResponseWriter, r *http.Request) {
@@ -99,49 +101,49 @@ func webhookHandler(w http.ResponseWriter, r *http.Request) {
 		}
 		messagingEvents := receivedMessage.Entry[0].Messaging
 		for _, event := range messagingEvents {
-			senderID := event.Sender.ID
 			if &event.Message != nil && event.Message.Text != "" {
-				sentTextMessage(senderID, event.Message.Text)
+				handleReceiveMessage(event)
 			}
 		}
 		fmt.Fprintf(w, "Success")
 	}
 }
 
-func sentTextMessage(senderID int64, sendtext string) {
-	recipient := new(Recipient)
-	recipient.ID = senderID
+func SendTextMessage(recipient Recipient, sendText string) {
 	m := new(SendMessage)
-	m.Recipient = *recipient
-	m.Message.Text = sendtext
+	m.Recipient = recipient
+
+	log.Print("------------------------------------------------------------")
+	log.Print(m.Message.Text)
+	log.Print("------------------------------------------------------------")
+
+	m.Message.Text = sendText
+
+	log.Print(m.Message.Text)
+
 	b, err := json.Marshal(m)
 	if err != nil {
 		log.Print(err)
 	}
-
 	req, err := http.NewRequest("POST", EndPoint, bytes.NewBuffer(b))
 	if err != nil {
 		log.Print(err)
 	}
-
 	values := url.Values{}
-	values.Add("acess_token", accessToken)
+	values.Add("access_token", accessToken)
 	req.URL.RawQuery = values.Encode()
-	req.Header.Add("Content-Type", "application/json;, charset=UTF-8")
+	req.Header.Add("Content-Type", "application/json; charset=UTF-8")
 	client := &http.Client{Timeout: time.Duration(30 * time.Second)}
 	res, err := client.Do(req)
 	if err != nil {
 		log.Print(err)
 	}
-
 	defer res.Body.Close()
 	var result map[string]interface{}
 	body, err := ioutil.ReadAll(res.Body)
-
 	if err != nil {
 		log.Print(err)
 	}
-
 	if err := json.Unmarshal(body, &result); err != nil {
 		log.Print(err)
 	}
