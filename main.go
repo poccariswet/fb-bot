@@ -1,12 +1,15 @@
-package fbbot
+package main
 
 import (
-	"bytes"
+  "bytes"
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
-	"time"
+	"net/url"
+	"os"
+  "time"
 )
 
 // FacebookMessenger ...
@@ -67,6 +70,47 @@ type SendMessage struct {
 	Message   *Text `json:"message"`
 }
 
+
+var debug bool
+var fb *FacebookMessenger
+
+func callbackHandler(w http.ResponseWriter, r *http.Request) {
+	b, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		fmt.Printf("Something wrong: %s\n", err.Error())
+		return
+	}
+	if debug {
+		log.Println("RecievedMessage Body:", string(b))
+	}
+
+	m, _ := url.ParseQuery(r.URL.RawQuery)
+	fmt.Println(m["hub.verify_token"])
+	if len(m["hub.verify_token"]) > 0 && m["hub.verify_token"][0] == os.Getenv("VERIFY_TOKEN") && len(m["hub.challenge"]) > 0 {
+		fmt.Fprintf(w, m["hub.challenge"][0])
+		return
+	}
+
+	var msg CallbackMessage
+	err = json.Unmarshal(b, &msg)
+	if err != nil {
+		fmt.Printf("Something wrong: %s\n", err.Error())
+		return
+	}
+
+	for _, event := range msg.Entry[0].Messaging {
+		sender := event.Sender.ID
+		if event.Message != nil {
+			fmt.Printf("Recieved Text: %s\n", event.Message.Text)
+			err := fb.SendTextMessage(sender, event.Message.Text)
+			if err != nil {
+				fmt.Printf("Something wrong: %s\n", err.Error())
+			}
+		}
+	}
+
+}
+
 // SendTextMessage ...
 func (fb *FacebookMessenger) SendTextMessage(recipient int, text string) error {
 
@@ -106,4 +150,18 @@ func (fb *FacebookMessenger) SendTextMessage(recipient int, text string) error {
 	log.Print("Response: ", result)
 	return nil
 
+}
+
+
+func main() {
+	debug = true
+	fb = &FacebookMessenger{
+		Token: os.Getenv("ACESS_TOKEN"),
+	}
+
+	http.HandleFunc("/fbbot/callback", callbackHandler)
+
+	port := os.Getenv("PORT")
+	addr := fmt.Sprintf(":%s", port)
+	http.ListenAndServe(addr, nil)
 }
