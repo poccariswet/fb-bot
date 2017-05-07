@@ -1,7 +1,7 @@
-package main
-
+package fbmessenger
 
 import (
+	//"reflect"
 	"bytes"
 	"encoding/json"
 	"fmt"
@@ -67,15 +67,18 @@ type SendMessage struct {
 	} `json:"message"`
 }
 
-func main(){
-	http.HandleFunc("/", helloHandler)
+func Listen(callback func(Messaging)) {
+	handleReceiveMessage = callback
+	http.HandleFunc("/", webhookHandler)
 	http.HandleFunc("/webhook", webhookHandler)
 	port := os.Getenv("PORT")
 	addr := fmt.Sprintf(":%s", port)
 	http.ListenAndServe(addr, nil)
 }
 
-func helloHandler(w http.ResponseWriter, r *http.Request) {
+var handleReceiveMessage func(Messaging)
+
+func HelloHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "Hello, Facebook Bot")
 }
 
@@ -98,32 +101,34 @@ func webhookHandler(w http.ResponseWriter, r *http.Request) {
 		}
 		messagingEvents := receivedMessage.Entry[0].Messaging
 		for _, event := range messagingEvents {
-			senderID := event.Sender.ID
 			if &event.Message != nil && event.Message.Text != "" {
-				sentTextMessage(senderID, event.Message.Text)
+				handleReceiveMessage(event)
 			}
 		}
 		fmt.Fprintf(w, "Success")
 	}
 }
 
-func sentTextMessage(senderID int64, text string) {
-	recipient := new(Recipient)
-	recipient.ID = senderID
+func SendTextMessage(recipient Recipient, sendText string) {
 	m := new(SendMessage)
-	m.Recipient = *recipient
-	m.Message.Text = text
+	m.Recipient = recipient
+
+	log.Print("------------------------------------------------------------")
+	log.Print(m.Message.Text)
+	log.Print("------------------------------------------------------------")
+
+	m.Message.Text = sendText
+
+	log.Print(m.Message.Text)
 
 	b, err := json.Marshal(m)
 	if err != nil {
 		log.Print(err)
 	}
-
 	req, err := http.NewRequest("POST", EndPoint, bytes.NewBuffer(b))
 	if err != nil {
 		log.Print(err)
 	}
-
 	values := url.Values{}
 	values.Add("access_token", accessToken)
 	req.URL.RawQuery = values.Encode()
@@ -133,7 +138,6 @@ func sentTextMessage(senderID int64, text string) {
 	if err != nil {
 		log.Print(err)
 	}
-
 	defer res.Body.Close()
 	var result map[string]interface{}
 	body, err := ioutil.ReadAll(res.Body)
