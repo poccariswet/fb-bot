@@ -14,7 +14,7 @@ import (
 )
 
 var accessToken = os.Getenv("ACCESS_TOKEN")
-var verifyToken = os.Getenv("VERIFY_TOKEN")
+var verifyToken = "s1240231_master_token"
 
 // const ...
 const (
@@ -68,6 +68,7 @@ type SendMessage struct {
 }
 
 func main(){
+	handleReceiveMessage = callback
 	http.HandleFunc("/", helloHandler)
 	http.HandleFunc("/webhook", webhookHandler)
 	port := os.Getenv("PORT")
@@ -75,14 +76,16 @@ func main(){
 	http.ListenAndServe(addr, nil)
 }
 
+var handleReceiveMessage func(Messaging)
+
 func helloHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "Hello, Facebook Bot")
 }
 
 func webhookHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "GET" {
-		if r.URL.Query().Get("hub_verify_token") == "s1240231_master_token" {
-			fmt.Fprintf(w, r.URL.Query().Get("hub_challenge"))
+		if r.URL.Query().Get("hub.verify_token") == verifyToken {
+			fmt.Fprintf(w, r.URL.Query().Get("hub.challenge"))
 		} else {
 			fmt.Fprintf(w, "Error, wrong validation token")
 		}
