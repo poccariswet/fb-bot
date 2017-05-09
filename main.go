@@ -14,7 +14,7 @@ import (
 )
 
 var accessToken = os.Getenv("ACCESS_TOKEN")
-var verifyToken = "s1240231_master_token"
+var verifyToken = os.Getenv("VERIFY_TOKEN")
 
 // const ...
 const (
