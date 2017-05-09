@@ -143,11 +143,17 @@ func sentTextMessage(senderID int64, text string) {
 	defer res.Body.Close()
 	var result map[string]interface{}
 	body, err := ioutil.ReadAll(res.Body)
+
 	if err != nil {
 		log.Print(err)
 	}
+	
 	if err := json.Unmarshal(body, &result); err != nil {
 		log.Print(err)
 	}
 	log.Print(result)
 }
+
+//cannot unmarshal string into Go struct field Entry.id of type int64
+//host=morning-river-91957.herokuapp.com request_id=4a575f6f-5719-4621-8ea2-61afa88c830a fwd="173.252.88.185" dyno=web.1 connect=1ms service=256ms status=200 bytes=142 protocol=https
+//Parameter error: You cannot send messages to this id type:OAuthException code:100 fbtrace_id:HaowwkaMtkC]]
