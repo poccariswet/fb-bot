@@ -81,8 +81,8 @@ func helloHandler(w http.ResponseWriter, r *http.Request) {
 
 func webhookHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "GET" {
-		if r.URL.Query().Get("hub.verify_token") == "s1240231_master_token" {
-			fmt.Fprintf(w, r.URL.Query().Get("hub.challenge"))
+		if r.URL.Query().Get("hub_verify_token") == "s1240231_master_token" {
+			fmt.Fprintf(w, r.URL.Query().Get("hub_challenge"))
 		} else {
 			fmt.Fprintf(w, "Error, wrong validation token")
 		}
