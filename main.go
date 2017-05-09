@@ -81,21 +81,24 @@ func helloHandler(w http.ResponseWriter, r *http.Request) {
 
 func webhookHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "GET" {
-		if r.URL.Query().Get("hub.verify_token") == verifyToken {
+		if r.URL.Query().Get("hub.verify_token") == "s1240231_master_token" {
 			fmt.Fprintf(w, r.URL.Query().Get("hub.challenge"))
 		} else {
 			fmt.Fprintf(w, "Error, wrong validation token")
 		}
 	}
+
 	if r.Method == "POST" {
 		var receivedMessage ReceivedMessage
 		b, err := ioutil.ReadAll(r.Body)
+
 		if err != nil {
 			log.Print(err)
 		}
 		if err = json.Unmarshal(b, &receivedMessage); err != nil {
 			log.Print(err)
 		}
+
 		messagingEvents := receivedMessage.Entry[0].Messaging
 		for _, event := range messagingEvents {
 			senderID := event.Sender.ID
