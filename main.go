@@ -68,7 +68,7 @@ type SendMessage struct {
 }
 
 func main(){
-	handleReceiveMessage = callback
+	// handleReceiveMessage = callback
 	http.HandleFunc("/", helloHandler)
 	http.HandleFunc("/webhook", webhookHandler)
 	port := os.Getenv("PORT")
@@ -76,7 +76,7 @@ func main(){
 	http.ListenAndServe(addr, nil)
 }
 
-var handleReceiveMessage func(Messaging)
+// var handleReceiveMessage func(Messaging)
 
 func helloHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "Hello, Facebook Bot")
