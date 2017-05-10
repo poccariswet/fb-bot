@@ -11,6 +11,7 @@ import (
 	"net/url"
 	"os"
 	"time"
+	// "strconv"
 )
 
 var accessToken = os.Getenv("ACCESS_TOKEN")
@@ -29,7 +30,7 @@ type ReceivedMessage struct {
 
 // Entry ...
 type Entry struct {
-	ID        int64       `json:"id"`
+	ID        *string       `json:"id"`
 	Time      int64       `json:"time"`
 	Messaging []Messaging `json:"messaging"`
 }
@@ -106,14 +107,14 @@ func webhookHandler(w http.ResponseWriter, r *http.Request) {
 		for _, event := range messagingEvents {
 			senderID := event.Sender.ID
 			if &event.Message != nil && event.Message.Text != "" {
-				sentTextMessage(senderID, event.Message.Text)
+				sendTextMessage(senderID, event.Message.Text)
 			}
 		}
 		fmt.Fprintf(w, "Success")
 	}
 }
 
-func sentTextMessage(senderID int64, text string) {
+func sendTextMessage(senderID int64, text string) {
 	recipient := new(Recipient)
 	recipient.ID = senderID
 	m := new(SendMessage)
@@ -147,7 +148,7 @@ func sentTextMessage(senderID int64, text string) {
 	if err != nil {
 		log.Print(err)
 	}
-	
+
 	if err := json.Unmarshal(body, &result); err != nil {
 		log.Print(err)
 	}
