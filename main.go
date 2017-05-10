@@ -11,7 +11,7 @@ import (
 	"net/url"
 	"os"
 	"time"
-	// "strcosnv"
+	// "strconv"
 )
 
 var accessToken = os.Getenv("ACCESS_TOKEN")
@@ -30,7 +30,7 @@ type ReceivedMessage struct {
 
 // Entry ...
 type Entry struct {
-	ID        int64       `json:"id"`
+	ID        string       `json:"id"`
 	Time      int64       `json:"time"`
 	Messaging []Messaging `json:"messaging"`
 }
@@ -62,7 +62,6 @@ type Message struct {
 
 // SendMessage ...
 type SendMessage struct {
-	Sender    Sender    `json:"sender"`
 	Recipient Recipient `json:"recipient"`
 	Message struct {
 		Text string `json:"text"`
@@ -105,6 +104,10 @@ func webhookHandler(w http.ResponseWriter, r *http.Request) {
 		}
 
 		messagingEvents := receivedMessage.Entry[0].Messaging
+		// receivedMessage.Entry[0].ID, err := strconv.ParseInt(receivedMessage.Entry[0].ID, 0, 64)
+		// if err != nil{
+		// 	log.Print("This is failed")
+		// }
 		for _, event := range messagingEvents {
 			senderID := event.Sender.ID
 
@@ -117,15 +120,14 @@ func webhookHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func sendTextMessage(senderID int64, text string) {
+	recipient := new(Recipient)
+	recipient.ID = senderID
 	m := new(SendMessage)
-	m.Sender.ID = senderID
+	m.Recipient = *recipient
 	m.Message.Text = text
 
 	log.Print("------------------------------------------------------------")
-	log.Print(m.Message.Text)
-	log.Print("------------------------------------------------------------")
-	// m.Message.Text = text
-	// log.Print(m.Message.Text)
+	log.Print("--------", m.Message.Text, "-------")
 
 	b, err := json.Marshal(m)
 	if err != nil {
