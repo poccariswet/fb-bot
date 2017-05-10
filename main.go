@@ -30,33 +30,33 @@ type ReceivedMessage struct {
 
 // Entry ...
 type Entry struct {
-	ID        int64       `json:"id"`
-	Time      int64       `json:"time"`
-	Messaging []Messaging `json:"messaging"`
+	ID        string       `json:"id"`
+	Time      int          `json:"time"`
+	Messaging []Messaging  `json:"messaging"`
 }
 
 // Messaging ...
 type Messaging struct {
 	Sender    Sender    `json:"sender"`
 	Recipient Recipient `json:"recipient"`
-	Timestamp int64     `json:"timestamp"`
+	Timestamp int       `json:"timestamp"`
 	Message   Message   `json:"message"`
 }
 
 // Sender ...
 type Sender struct {
-	ID int64 `json:"id"`
+	ID string `json:"id"`
 }
 
 // Recipient ...
 type Recipient struct {
-	ID int64 `json:"id"`
+	ID string `json:"id"`
 }
 
 // Message ...
 type Message struct {
 	MID  string `json:"mid"`
-	Seq  int64  `json:"seq"`
+	Seq  int  `json:"seq"`
 	Text string `json:"text"`
 }
 
@@ -118,7 +118,7 @@ func webhookPostAction(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "Success")
 }
 
-func sendTextMessage(senderID int64, text string) {
+func sendTextMessage(senderID string, text string) {
 	recipient := new(Recipient)
 	recipient.ID = senderID
 	m := new(SendMessage)
