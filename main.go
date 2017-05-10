@@ -62,6 +62,7 @@ type Message struct {
 
 // SendMessage ...
 type SendMessage struct {
+	Sender    Sender    `json:"sender"`
 	Recipient Recipient `json:"recipient"`
 	Message struct {
 		Text string `json:"text"`
@@ -116,14 +117,15 @@ func webhookHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func sendTextMessage(senderID int64, text string) {
-	recipient := new(Recipient)
-	recipient.ID = senderID
 	m := new(SendMessage)
-	m.Recipient = *recipient
+	m.Sender.ID = senderID
 	m.Message.Text = text
 
 	log.Print("------------------------------------------------------------")
-	log.Print("--------", m.Message.Text, "-------")
+	log.Print(m.Message.Text)
+	log.Print("------------------------------------------------------------")
+	// m.Message.Text = text
+	// log.Print(m.Message.Text)
 
 	b, err := json.Marshal(m)
 	if err != nil {
