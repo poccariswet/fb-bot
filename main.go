@@ -126,12 +126,12 @@ func sendTextMessage(senderID int64, text string) {
 	log.Print("-----------------------------------")
 	log.Print(m.Message.Text)
 
-	body, err := json.Marshal(m)
+	b, err := json.Marshal(m)
 	if err != nil {
 		log.Print(err)
 	}
 
-	req, err := http.NewRequest("POST", EndPoint, bytes.NewBuffer(body))
+	req, err := http.NewRequest("POST", EndPoint, bytes.NewBuffer(b))
 	if err != nil {
 		log.Print(err)
 	}
