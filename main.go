@@ -11,7 +11,7 @@ import (
 	"net/url"
 	"os"
 	"time"
-	// "strconv"
+	// "strcosnv"
 )
 
 var accessToken = os.Getenv("ACCESS_TOKEN")
@@ -62,6 +62,7 @@ type Message struct {
 
 // SendMessage ...
 type SendMessage struct {
+	Sender    Sender    `json:"sender"`
 	Recipient Recipient `json:"recipient"`
 	Message struct {
 		Text string `json:"text"`
@@ -106,6 +107,7 @@ func webhookHandler(w http.ResponseWriter, r *http.Request) {
 		messagingEvents := receivedMessage.Entry[0].Messaging
 		for _, event := range messagingEvents {
 			senderID := event.Sender.ID
+
 			if &event.Message != nil && event.Message.Text != "" {
 				sendTextMessage(senderID, event.Message.Text)
 			}
@@ -115,11 +117,16 @@ func webhookHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func sendTextMessage(senderID int64, text string) {
-	recipient := new(Recipient)
-	recipient.ID = senderID
 	m := new(SendMessage)
-	m.Recipient = *recipient
+	m.Sender.ID = senderID
+
+	log.Print("------------------------------------------------------------")
+	log.Print(m.Message.Text)
+	log.Print("------------------------------------------------------------")
+
 	m.Message.Text = text
+
+	log.Print(m.Message.Text)
 
 	b, err := json.Marshal(m)
 	if err != nil {
@@ -154,7 +161,3 @@ func sendTextMessage(senderID int64, text string) {
 	}
 	log.Print(result)
 }
-
-//cannot unmarshal string into Go struct field Entry.id of type int64
-//host=morning-river-91957.herokuapp.com request_id=4a575f6f-5719-4621-8ea2-61afa88c830a fwd="173.252.88.185" dyno=web.1 connect=1ms service=256ms status=200 bytes=142 protocol=https
-//Parameter error: You cannot send messages to this id type:OAuthException code:100 fbtrace_id:HaowwkaMtkC]]
