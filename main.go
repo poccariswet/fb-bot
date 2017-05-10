@@ -11,7 +11,7 @@ import (
 	"net/url"
 	"os"
 	"time"
-	// "strconv"
+	// "strcosnv"
 )
 
 var accessToken = os.Getenv("ACCESS_TOKEN")
@@ -30,7 +30,7 @@ type ReceivedMessage struct {
 
 // Entry ...
 type Entry struct {
-	ID        string       `json:"id"`
+	ID        int64       `json:"id"`
 	Time      int64       `json:"time"`
 	Messaging []Messaging `json:"messaging"`
 }
