@@ -117,22 +117,21 @@ func webhookHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func sendTextMessage(senderID int64, text string) {
+	recipient := new(Recipient)
+	recipient.ID = senderID
 	m := new(SendMessage)
-	m.Sender.ID = senderID
+	m.Recipient = *recipient
 	m.Message.Text = text
 
-	log.Print("------------------------------------------------------------")
+	log.Print("-----------------------------------")
 	log.Print(m.Message.Text)
-	log.Print("------------------------------------------------------------")
-	// m.Message.Text = text
-	// log.Print(m.Message.Text)
 
-	b, err := json.Marshal(m)
+	body, err := json.Marshal(m)
 	if err != nil {
 		log.Print(err)
 	}
 
-	req, err := http.NewRequest("POST", EndPoint, bytes.NewBuffer(b))
+	req, err := http.NewRequest("POST", EndPoint, bytes.NewBuffer(body))
 	if err != nil {
 		log.Print(err)
 	}
