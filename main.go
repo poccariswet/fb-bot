@@ -104,10 +104,6 @@ func webhookHandler(w http.ResponseWriter, r *http.Request) {
 		}
 
 		messagingEvents := receivedMessage.Entry[0].Messaging
-		// receivedMessage.Entry[0].ID, err := strconv.ParseInt(receivedMessage.Entry[0].ID, 0, 64)
-		// if err != nil{
-		// 	log.Print("This is failed")
-		// }
 		for _, event := range messagingEvents {
 			senderID := event.Sender.ID
 
