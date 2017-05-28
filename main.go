@@ -11,7 +11,6 @@ import (
 	"os"
 	"time"
 	"github.com/soeyusuke/fb-bot/types"
-	//"strcosnv"
 )
 
 var accessToken = os.Getenv("ACCESS_TOKEN")

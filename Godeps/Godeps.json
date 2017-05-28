@@ -1,5 +1,5 @@
 {
-	"ImportPath": "soeyusuke/fb-bot",
+	"ImportPath": "github.com/soeyusuke/fb-bot",
 	"GoVersion": "go1.8",
 	"GodepVersion": "v79",
 	"Packages": [
