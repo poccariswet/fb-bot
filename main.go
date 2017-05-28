@@ -1,6 +1,5 @@
 package main
 
-
 import (
 	"bytes"
 	"encoding/json"
@@ -11,6 +10,7 @@ import (
 	"net/url"
 	"os"
 	"time"
+	"github.com/soeyusuke/fb-bot/types"
 	//"strcosnv"
 )
 
@@ -21,52 +21,6 @@ var verifyToken = os.Getenv("VERIFY_TOKEN")
 const (
 	EndPoint = "https://graph.facebook.com/v2.6/me/messages"
 )
-
-// ReceivedMessage ...
-type ReceivedMessage struct {
-	Object string  `json:"object"`
-	Entry  []Entry `json:"entry"`
-}
-
-// Entry ...
-type Entry struct {
-	ID        string       `json:"id"`
-	Time      int          `json:"time"`
-	Messaging []Messaging  `json:"messaging"`
-}
-
-// Messaging ...
-type Messaging struct {
-	Sender    Sender    `json:"sender"`
-	Recipient Recipient `json:"recipient"`
-	Timestamp int       `json:"timestamp"`
-	Message   Message   `json:"message"`
-}
-
-// Sender ...
-type Sender struct {
-	ID string `json:"id"`
-}
-
-// Recipient ...
-type Recipient struct {
-	ID string `json:"id"`
-}
-
-// Message ...
-type Message struct {
-	MID  string `json:"mid"`
-	Seq  int  `json:"seq"`
-	Text string `json:"text"`
-}
-
-// SendMessage ...
-type SendMessage struct {
-	Recipient Recipient `json:"recipient"`
-	Message struct {
-		Text string `json:"text"`
-	} `json:"message"`
-}
 
 func main() {
 	http.HandleFunc("/", TopPageHandler)
@@ -100,7 +54,7 @@ func verifyTokenAction(w http.ResponseWriter, r *http.Request) {
 }
 
 func webhookPostAction(w http.ResponseWriter, r *http.Request) {
-	var receivedMessage ReceivedMessage
+	var receivedMessage types.ReceivedMessage
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		log.Print(err)
@@ -119,9 +73,9 @@ func webhookPostAction(w http.ResponseWriter, r *http.Request) {
 }
 
 func sendTextMessage(senderID string, text string) {
-	recipient := new(Recipient)
+	recipient := new(types.Recipient)
 	recipient.ID = senderID
-	m := new(SendMessage)
+	m := new(types.SendMessage)
 	m.Recipient = *recipient
 	m.Message.Text = text
 
