@@ -10,6 +10,7 @@ import (
 	"net/url"
 	"os"
 	"time"
+
 	"github.com/soeyusuke/fb-bot/types"
 )
 
@@ -18,7 +19,8 @@ var verifyToken = os.Getenv("VERIFY_TOKEN")
 
 // const ...
 const (
-	EndPoint = "https://graph.facebook.com/v2.6/me/messages"
+	EndPoint   = "https://graph.facebook.com/v2.6/me/messages"
+	talkApiUrl = "https://api.a3rt.recruit-tech.co.jp/talk/v1/smalltalk" //recruit talk API
 )
 
 func main() {
@@ -76,7 +78,20 @@ func sendTextMessage(senderID string, text string) {
 	recipient.ID = senderID
 	m := new(types.SendMessage)
 	m.Recipient = *recipient
-	m.Message.Text = text
+
+	//talk api 取得
+	params := url.Values{
+		"apikey": {os.Getenv("TALKAPIID")},
+		"query":  {text},
+	}
+	json := types.TalkJson{}
+
+	err := post(talkApiUrl, params, &json)
+	if err != nil {
+		json.Results[0].Reply = "ちょっとよくわかりません"
+	}
+
+	m.Message.Text = json.Results[0].Reply
 
 	log.Print("-----------------------------------")
 	log.Print(m.Message.Text)
@@ -113,4 +128,26 @@ func sendTextMessage(senderID string, text string) {
 		log.Print(err)
 	}
 	log.Print(result)
+}
+
+//post
+func post(url string, params url.Values, out interface{}) error {
+	resp, err := http.PostForm(url, params)
+	// fmt.Println(resp)
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+
+	respBody, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(respBody, out)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

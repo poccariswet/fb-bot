@@ -1,5 +1,5 @@
 package types
-
+//----FB----
 // ReceivedMessage ...
 type ReceivedMessage struct {
 	Object string  `json:"object"`
@@ -45,3 +45,16 @@ type SendMessage struct {
 		Text string `json:"text"`
 	} `json:"message"`
 }
+
+
+//---talk type---
+type TalkJson struct {
+		Status int `json:"status"`
+		Message string `json:"message"`
+		Results []talkApiResult `json:"results"`
+	}
+
+type talkApiResult struct {
+		Perplexity float64 `json:"perplexity"`
+		Reply      string  `json:"reply"`
+	}
