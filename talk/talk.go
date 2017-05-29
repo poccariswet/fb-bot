@@ -21,19 +21,16 @@ func Talk(text string) string {
 
 	err := post(talkApiUrl, params, &json)
 	if err != nil {
-		// fmt.Println("ちょっとよくわかりません")
 		return "ちょっとよくわかりません"
 	} else {
-		// fmt.Println(json.Results[0].Reply)
 		return json.Results[0].Reply
 	}
-	// return json.Results[0].Reply
 }
 
 func post(url string, params url.Values, out interface{}) error {
 	resp, err := http.PostForm(url, params)
-	// fmt.Println(resp)
 	if err != nil {
+
 		return err
 	}
 	defer resp.Body.Close()
