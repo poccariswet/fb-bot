@@ -12,10 +12,10 @@ import (
 
 const talkApiUrl = "https://api.a3rt.recruit-tech.co.jp/talk/v1/smalltalk" //recruit talk API
 
-func Talk(text string) string {
+func Talk(m string) string {
 	params := url.Values{
 		"apikey": {os.Getenv("TALKAPIID")},
-		"query":  {text},
+		"query":  {m},
 	}
 	json := types.TalkJson{}
 
