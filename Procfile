@@ -1,1 +1,1 @@
-web: fb-bot
+web:fbbot
