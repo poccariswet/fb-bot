@@ -11,6 +11,7 @@ import (
 	"os"
 	"time"
 
+
 	"github.com/soeyusuke/fb-bot/talk"
 	"github.com/soeyusuke/fb-bot/types"
 )
