@@ -11,6 +11,7 @@ import (
 	"os"
 	"time"
 
+	"github.com/soeyusuke/fb-bot/talk"
 	"github.com/soeyusuke/fb-bot/types"
 )
 
@@ -19,8 +20,8 @@ var verifyToken = os.Getenv("VERIFY_TOKEN")
 
 // const ...
 const (
-	EndPoint   = "https://graph.facebook.com/v2.6/me/messages"
-	talkApiUrl = "https://api.a3rt.recruit-tech.co.jp/talk/v1/smalltalk" //recruit talk API
+	EndPoint = "https://graph.facebook.com/v2.6/me/messages"
+	// talkApiUrl = "https://api.a3rt.recruit-tech.co.jp/talk/v1/smalltalk" //recruit talk API
 )
 
 func main() {
@@ -79,19 +80,19 @@ func sendTextMessage(senderID string, text string) {
 	m := new(types.SendMessage)
 	m.Recipient = *recipient
 
-	//talk api 取得
-	params := url.Values{
-		"apikey": {os.Getenv("TALKAPIID")},
-		"query":  {text},
-	}
-	json := types.TalkJson{}
-
-	err := post(talkApiUrl, params, &json)
-	if err != nil {
-		json.Results[0].Reply = "ちょっとよくわかりません"
-	}
-
-	m.Message.Text = json.Results[0].Reply
+	// //talk api 取得
+	// params := url.Values{
+	// 	"apikey": {os.Getenv("TALKAPIID")},
+	// 	"query":  {text},
+	// }
+	// json := types.TalkJson{}
+	//
+	// err := post(talkApiUrl, params, &json)
+	// if err != nil {
+	// 	json.Results[0].Reply = "ちょっとよくわかりません"
+	// }
+	//
+	m.Message.Text = talk.Talk(text)
 
 	log.Print("-----------------------------------")
 	log.Print(m.Message.Text)
@@ -130,24 +131,24 @@ func sendTextMessage(senderID string, text string) {
 	log.Print(result)
 }
 
-//post
-func post(url string, params url.Values, out interface{}) error {
-	resp, err := http.PostForm(url, params)
-	// fmt.Println(resp)
-	if err != nil {
-		return err
-	}
-	defer resp.Body.Close()
-
-	respBody, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		return err
-	}
-
-	err = json.Unmarshal(respBody, out)
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
+// //post
+// func post(url string, params url.Values, out interface{}) error {
+// 	resp, err := http.PostForm(url, params)
+// 	// fmt.Println(resp)
+// 	if err != nil {
+// 		return err
+// 	}
+// 	defer resp.Body.Close()
+//
+// 	respBody, err := ioutil.ReadAll(resp.Body)
+// 	if err != nil {
+// 		return err
+// 	}
+//
+// 	err = json.Unmarshal(respBody, out)
+// 	if err != nil {
+// 		return err
+// 	}
+//
+// 	return nil
+// }
