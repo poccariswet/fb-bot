@@ -77,7 +77,7 @@ func sendTextMessage(senderID string, text string) {
 	recipient.ID = senderID
 	m := new(types.SendMessage)
 	m.Recipient = *recipient
-	m.Message.Text = talk.Talk(text)
+	m.Message.Text = talk.TalkApi(text)
 
 	log.Print("-----------------------------------")
 	log.Print(m.Message.Text)
