@@ -57,6 +57,8 @@ func verifyTokenAction(w http.ResponseWriter, r *http.Request) {
 	} else {
 		log.Print("Error: verify token failed.")
 		fmt.Fprintf(w, "Error, wrong validation token")
+		fmt.Fprintf(w, "%s",verifyToken)
+		fmt.Fprintf(w, "%s",accessToken)
 	}
 }
 
