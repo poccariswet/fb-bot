@@ -24,13 +24,14 @@ const (
 )
 
 func main() {
+	port := os.Getenv("PORT")
 	l, err := net.Listen("tcp", "127.0.0.1:"+port)
 	if err != nil {
 		return
 	}
 	http.HandleFunc("/", TopPageHandler)
 	http.HandleFunc("/webhook", webhookHandler)
-	port := os.Getenv("PORT")
+	// port := os.Getenv("PORT")
 	fcgi.Serve(l, nil)
 
 }
