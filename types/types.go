@@ -48,13 +48,13 @@ type SendMessage struct {
 
 
 //---talk type---
-type TalkJson struct {
-		Status int `json:"status"`
-		Message string `json:"message"`
-		Results []talkApiResult `json:"results"`
-	}
-
-type talkApiResult struct {
-		Perplexity float64 `json:"perplexity"`
-		Reply      string  `json:"reply"`
-	}
+// type TalkJson struct {
+// 		Status int `json:"status"`
+// 		Message string `json:"message"`
+// 		Results []talkApiResult `json:"results"`
+// 	}
+//
+// type talkApiResult struct {
+// 		Perplexity float64 `json:"perplexity"`
+// 		Reply      string  `json:"reply"`
+// 	}

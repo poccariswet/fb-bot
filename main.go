@@ -11,7 +11,7 @@ import (
 	"os"
 	"time"
 
-	"github.com/soeyusuke/fb-bot/talk"
+	// "github.com/soeyusuke/fb-bot/talk"
 	"github.com/soeyusuke/fb-bot/types"
 )
 
@@ -77,7 +77,8 @@ func sendTextMessage(senderID string, text string) {
 	recipient.ID = senderID
 	m := new(types.SendMessage)
 	m.Recipient = *recipient
-	m.Message.Text = talk.Talk(text)
+	// m.Message.Text = talk.Talk(text)
+	m.Message.Text = text
 
 	log.Print("-----------------------------------")
 	log.Print(m.Message.Text)
