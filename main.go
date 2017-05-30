@@ -51,7 +51,7 @@ func webhookHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func verifyTokenAction(w http.ResponseWriter, r *http.Request) {
-	if r.URL.Query().Get("hub.verify_token") == ("token"+verifyToken) {
+	if r.URL.Query().Get("hub.verify_token") == verifyToken {
 		log.Print("verify token success.")
 		fmt.Fprintf(w, r.URL.Query().Get("hub.challenge"))
 	} else {
