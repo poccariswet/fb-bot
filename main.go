@@ -28,13 +28,6 @@ func main() {
 	port := os.Getenv("PORT")
 	address := fmt.Sprintf(":%s", port)
 	http.ListenAndServe(address, nil)
-	// l, err := net.Listen("tcp", "127.0.0.1:9000")
-	// if err != nil {
-	// 	return
-	// }
-	// http.HandleFunc("/", TopPageHandler)
-	// http.HandleFunc("/webhook", webhookHandler)
-	// fcgi.Serve(l, nil)
 }
 
 func TopPageHandler(w http.ResponseWriter, r *http.Request) {
@@ -42,12 +35,11 @@ func TopPageHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func webhookHandler(w http.ResponseWriter, r *http.Request) {
-	if r.Method == "POST" {
-		fmt.Fprintf(w, "This is go-bot application's top page.")
-		webhookPostAction(w, r)
-	}
 	if r.Method == "GET" {
 		verifyTokenAction(w, r)
+	}
+	if r.Method == "POST" {
+		webhookPostAction(w, r)
 	}
 }
 
@@ -58,8 +50,6 @@ func verifyTokenAction(w http.ResponseWriter, r *http.Request) {
 	} else {
 		log.Print("Error: verify token failed.")
 		fmt.Fprintf(w, "Error, wrong validation token")
-		fmt.Fprintf(w, "%s",verifyToken)
-		fmt.Fprintf(w, "%s",accessToken)
 	}
 }
 
@@ -88,7 +78,6 @@ func sendTextMessage(senderID string, text string) {
 	m := new(types.SendMessage)
 	m.Recipient = *recipient
 	m.Message.Text = talk.Talk(text)
-	// m.Message.Text = text
 
 	log.Print("-----------------------------------")
 	log.Print(m.Message.Text)

@@ -30,7 +30,6 @@ func Talk(text string) string {
 func post(url string, params url.Values, out interface{}) error {
 	resp, err := http.PostForm(url, params)
 	if err != nil {
-
 		return err
 	}
 	defer resp.Body.Close()
