@@ -43,6 +43,7 @@ func TopPageHandler(w http.ResponseWriter, r *http.Request) {
 
 func webhookHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "POST" {
+		fmt.Fprintf(w, "This is go-bot application's top page.")
 		webhookPostAction(w, r)
 	}
 	if r.Method == "GET" {
