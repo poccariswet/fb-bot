@@ -25,16 +25,18 @@ const (
 )
 
 func main() {
-	port := os.Getenv("PORT")
-	l, err := net.Listen("tcp", "127.0.0.1:"+port)
-	if err != nil {
-		return
-	}
 	http.HandleFunc("/", TopPageHandler)
 	http.HandleFunc("/webhook", webhookHandler)
-	// port := os.Getenv("PORT")
-	fcgi.Serve(l, nil)
-
+	port := os.Getenv("PORT")
+	address := fmt.Sprintf(":%s", port)
+	http.ListenAndServe(address, nil)
+	// l, err := net.Listen("tcp", "127.0.0.1:9000")
+	// if err != nil {
+	// 	return
+	// }
+	// http.HandleFunc("/", TopPageHandler)
+	// http.HandleFunc("/webhook", webhookHandler)
+	// fcgi.Serve(l, nil)
 }
 
 func TopPageHandler(w http.ResponseWriter, r *http.Request) {
