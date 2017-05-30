@@ -42,11 +42,11 @@ func TopPageHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func webhookHandler(w http.ResponseWriter, r *http.Request) {
-	if r.Method == "GET" {
-		verifyTokenAction(w, r)
-	}
 	if r.Method == "POST" {
 		webhookPostAction(w, r)
+	}
+	if r.Method == "GET" {
+		verifyTokenAction(w, r)
 	}
 }
 
