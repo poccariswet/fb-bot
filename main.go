@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"log"
+	"net"
 	"net/http"
 	"net/url"
 	"os"
@@ -23,13 +24,15 @@ const (
 )
 
 func main() {
-	http.HandleFunc("/", TopPageHandler)
-	http.HandleFunc("/webhook", webhookHandler)
-	port := os.Getenv("PORT")
 	l, err := net.Listen("tcp", "127.0.0.1:"+port)
 	if err != nil {
 		return
 	}
+	http.HandleFunc("/", TopPageHandler)
+	http.HandleFunc("/webhook", webhookHandler)
+	port := os.Getenv("PORT")
+	fcgi.Serve(l, nil)
+
 }
 
 func TopPageHandler(w http.ResponseWriter, r *http.Request) {
