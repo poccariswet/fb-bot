@@ -26,8 +26,10 @@ func main() {
 	http.HandleFunc("/", TopPageHandler)
 	http.HandleFunc("/webhook", webhookHandler)
 	port := os.Getenv("PORT")
-	address := fmt.Sprintf(":%s", port)
-	http.ListenAndServe(address, nil)
+	l, err := net.Listen("tcp", "127.0.0.1:"+port)
+	if err != nil {
+		return
+	}
 }
 
 func TopPageHandler(w http.ResponseWriter, r *http.Request) {
