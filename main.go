@@ -66,6 +66,7 @@ func webhookPostAction(w http.ResponseWriter, r *http.Request) {
 	}
 	log.Print("ffffffffffffffffffffffffffffffffffffffffffffffffffffffffff")
 	messagingEvents := receivedMessage.Entry[0].Messaging
+	log.Print(messagingEvents)
 	for i, event := range messagingEvents {
 		senderID := event.Sender.ID
 		log.Print(i)
