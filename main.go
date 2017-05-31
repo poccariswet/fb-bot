@@ -60,17 +60,22 @@ func webhookPostAction(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Print(err)
 	}
-	log.Print("ffffffffffffffffffffffffffffffffffffffffffffffffffffffffff")
+
 	if err = json.Unmarshal(body, &receivedMessage); err != nil {
 		log.Print(err)
 	}
+	log.Print("ffffffffffffffffffffffffffffffffffffffffffffffffffffffffff")
 	messagingEvents := receivedMessage.Entry[0].Messaging
-	for _, event := range messagingEvents {
+	for i, event := range messagingEvents {
 		senderID := event.Sender.ID
+		log.Print(i)
 		if &event.Message != nil && event.Message.Text != "" {
+			log.Print("hoge")
 			sendTextMessage(senderID, event.Message.Text)
 		}
+
 	}
+	log.Print("hogehogehoge")
 	fmt.Fprintf(w, "Success")
 }
 
