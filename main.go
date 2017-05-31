@@ -55,12 +55,12 @@ func verifyTokenAction(w http.ResponseWriter, r *http.Request) {
 }
 
 func webhookPostAction(w http.ResponseWriter, r *http.Request) {
-	log.Print("ffffffffffffffffffffffffffffffffffffffffffffffffffffffffff")
 	var receivedMessage types.ReceivedMessage
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		log.Print(err)
 	}
+	log.Print("ffffffffffffffffffffffffffffffffffffffffffffffffffffffffff")
 	if err = json.Unmarshal(body, &receivedMessage); err != nil {
 		log.Print(err)
 	}
