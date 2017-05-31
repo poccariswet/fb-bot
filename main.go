@@ -39,6 +39,7 @@ func webhookHandler(w http.ResponseWriter, r *http.Request) {
 		verifyTokenAction(w, r)
 	}
 	if r.Method == "POST" {
+		log.Print("ttttttttttttttttttttttttttttttttttttttttttttttttttttttt")
 		webhookPostAction(w, r)
 	}
 }
@@ -54,6 +55,7 @@ func verifyTokenAction(w http.ResponseWriter, r *http.Request) {
 }
 
 func webhookPostAction(w http.ResponseWriter, r *http.Request) {
+	log.Print("ffffffffffffffffffffffffffffffffffffffffffffffffffffffffff")
 	var receivedMessage types.ReceivedMessage
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
