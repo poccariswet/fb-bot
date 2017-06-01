@@ -1,4 +1,4 @@
-package talk
+package Testtalk
 
 import (
 	"encoding/json"
@@ -12,7 +12,7 @@ import (
 
 const talkApiUrl = "https://api.a3rt.recruit-tech.co.jp/talk/v1/smalltalk" //recruit talk API
 
-func TalkApi(text string) string {
+func Talk(text string) string {
 	params := url.Values{
 		"apikey": {os.Getenv("TALKAPIID")},
 		"query":  {text},
